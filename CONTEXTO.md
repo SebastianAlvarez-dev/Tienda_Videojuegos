@@ -68,16 +68,16 @@ Infrastructure (Prisma, Supabase y repositorios)
 
 ## Recursos principales
 
-- `Game`: videojuego disponible para la venta.
-- `Sale`: registro de una compra realizada.
+- `Juego`: videojuego disponible para la venta.
+- `Venta`: registro de una compra realizada.
 
 ## Endpoints previstos
 
 | Método | Ruta | Caso de uso | Respuesta exitosa |
 | --- | --- | --- | --- |
-| `POST` | `/games` | Registrar videojuego | `201 Created` |
-| `GET` | `/games` | Consultar catálogo | `200 OK` |
-| `POST` | `/games/:gameId/purchases` | Registrar compra | `201 Created` |
+| `POST` | `/juegos` | Registrar videojuego | `201 Created` |
+| `GET` | `/juegos` | Consultar catálogo | `200 OK` |
+| `POST` | `/juegos/:juegoId/compras` | Registrar compra | `201 Created` |
 
 ## Criterios de aceptación
 
