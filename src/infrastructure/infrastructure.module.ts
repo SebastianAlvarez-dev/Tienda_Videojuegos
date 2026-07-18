@@ -1,9 +1,9 @@
 import { Module } from '@nestjs/common';
-import { GAME_REPOSITORY } from '../domain/game';
+import { REPOSITORIO_JUEGOS } from '../domain/ports/repositorio-juegos';
 import { PrismaGameRepository, PrismaService } from './prisma-game.repository';
 
 @Module({
-  providers: [PrismaService, { provide: GAME_REPOSITORY, useClass: PrismaGameRepository }],
-  exports: [GAME_REPOSITORY],
+  providers: [PrismaService, { provide: REPOSITORIO_JUEGOS, useClass: PrismaGameRepository }],
+  exports: [REPOSITORIO_JUEGOS],
 })
 export class InfrastructureModule {}

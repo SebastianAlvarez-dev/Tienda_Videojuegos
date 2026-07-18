@@ -19,18 +19,18 @@ PORT=3000
 
 `DATABASE_URL` será usada por la aplicación y `DIRECT_URL` por Prisma para migraciones. En desarrollo local se puede usar la misma cadena de **Session pooler** (puerto `5432`) en ambas variables.
 
-## Estructura prevista
+## Estructura del proyecto
 
 ```text
 src/
   domain/
     entities/
-    repositories/
+    errors/
+    ports/
   application/
     use-cases/
   infrastructure/
-    database/
-    repositories/
+    prisma-game.repository.ts
   presentation/
     http/
 test/
@@ -77,12 +77,6 @@ Se ejecutan desde la terminal integrada de Visual Studio Code. La extensión **V
 4. El repositorio registra la venta y reduce el stock dentro de una transacción.
 5. La API responde con `201 Created` o un error HTTP adecuado.
 
-## Pendiente de implementación
-
-1. Crear el proyecto de Supabase y completar `.env` con sus cadenas de conexión.
-2. Ejecutar la primera migración de Prisma.
-3. Importar la colección Postman y ejecutar sus solicitudes.
-
 ## Bitácora de avances
 
 ### 2026-07-18 — API inicial
@@ -111,6 +105,12 @@ Se ejecutan desde la terminal integrada de Visual Studio Code. La extensión **V
 - Se añadieron pruebas unitarias y de integración con Vitest.
 - Se agregó una colección Postman para registrar, consultar y comprar videojuegos.
 - Se creó `README.md` con los pasos de instalación, uso y pruebas del proyecto.
+
+### 2026-07-18 — Organización para explicación académica
+
+- Se separaron las entidades `Juego` y `Venta`, el error de dominio y el puerto del repositorio.
+- Cada caso de uso tiene su propio archivo: crear, listar y comprar juegos.
+- La estructura facilita explicar las responsabilidades de las capas de Clean Architecture.
 
 ## Guía práctica de prueba
 

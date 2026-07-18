@@ -1,6 +1,6 @@
 import { ArgumentsHost, Catch, ExceptionFilter, HttpStatus } from '@nestjs/common';
 import { Response } from 'express';
-import { DomainError } from '../domain/game';
+import { ErrorDominio } from '../domain/errors/error-dominio';
 
 const statusByCode = {
   JUEGO_INVALIDO: HttpStatus.BAD_REQUEST,
@@ -9,9 +9,9 @@ const statusByCode = {
   JUEGO_YA_EXISTE: HttpStatus.CONFLICT,
 };
 
-@Catch(DomainError)
+@Catch(ErrorDominio)
 export class DomainErrorFilter implements ExceptionFilter {
-  catch(error: DomainError, host: ArgumentsHost) {
-    host.switchToHttp().getResponse<Response>().status(statusByCode[error.code]).json({ message: error.message, code: error.code });
+  catch(error: ErrorDominio, host: ArgumentsHost) {
+    host.switchToHttp().getResponse<Response>().status(statusByCode[error.codigo]).json({ message: error.message, code: error.codigo });
   }
 }

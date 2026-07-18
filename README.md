@@ -76,7 +76,11 @@ Importar `postman/GameStore.postman_collection.json` o crear las tres solicitude
 
 ```text
 src/domain           Entidades y puertos
-src/application      Casos de uso
+  entities/          Juego y Venta
+  errors/            Errores de negocio
+  ports/             Contratos de repositorio
+src/application
+  use-cases/         Un archivo por caso de uso
 src/infrastructure   Prisma y repositorios
 src/presentation     Controladores HTTP y validación
 ```

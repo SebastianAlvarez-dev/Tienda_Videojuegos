@@ -1,53 +1,56 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaClient } from '@prisma/client';
-import { DomainError, Game, GameRepository, Sale } from '../domain/game';
+import { Juego } from '../domain/entities/juego';
+import { Venta } from '../domain/entities/venta';
+import { ErrorDominio } from '../domain/errors/error-dominio';
+import { RepositorioJuegos } from '../domain/ports/repositorio-juegos';
 
 @Injectable()
 export class PrismaService extends PrismaClient {}
 
 @Injectable()
-export class PrismaGameRepository implements GameRepository {
+export class PrismaGameRepository implements RepositorioJuegos {
   constructor(private readonly prisma: PrismaService) {}
 
-  async create(game: Game): Promise<Game> {
+  async crear(juego: Juego): Promise<Juego> {
     try {
       const created = await this.prisma.juego.create({
-        data: { id: game.id, titulo: game.titulo, genero: game.genero, precio: game.precio, stock: game.stock },
+        data: { id: juego.id, titulo: juego.titulo, genero: juego.genero, precio: juego.precio, stock: juego.stock },
       });
-      return this.toGame(created);
+      return this.toJuego(created);
     } catch (error: unknown) {
       if (typeof error === 'object' && error && 'code' in error && error.code === 'P2002') {
-        throw new DomainError('Ya existe un videojuego con ese título.', 'JUEGO_YA_EXISTE');
+        throw new ErrorDominio('Ya existe un videojuego con ese título.', 'JUEGO_YA_EXISTE');
       }
       throw error;
     }
   }
 
-  async findAll(): Promise<Game[]> {
-    const games = await this.prisma.juego.findMany({ orderBy: { fechaCreacion: 'desc' } });
-    return games.map((game) => this.toGame(game));
+  async listar(): Promise<Juego[]> {
+    const juegos = await this.prisma.juego.findMany({ orderBy: { fechaCreacion: 'desc' } });
+    return juegos.map((juego) => this.toJuego(juego));
   }
 
-  async findById(id: string): Promise<Game | null> {
-    const game = await this.prisma.juego.findUnique({ where: { id } });
-    return game ? this.toGame(game) : null;
+  async buscarPorId(id: string): Promise<Juego | null> {
+    const juego = await this.prisma.juego.findUnique({ where: { id } });
+    return juego ? this.toJuego(juego) : null;
   }
 
-  async purchase(gameId: string): Promise<Sale | null> {
+  async comprar(juegoId: string): Promise<Venta | null> {
     return this.prisma.$transaction(async (transaction) => {
       const updated = await transaction.juego.updateMany({
-        where: { id: gameId, stock: { gt: 0 } },
+        where: { id: juegoId, stock: { gt: 0 } },
         data: { stock: { decrement: 1 } },
       });
       if (!updated.count) return null;
 
-      const game = await transaction.juego.findUniqueOrThrow({ where: { id: gameId } });
-      const sale = await transaction.venta.create({ data: { juegoId: gameId, precio: game.precio } });
-      return new Sale(sale.id, sale.juegoId, Number(sale.precio), sale.fechaCreacion);
+      const juego = await transaction.juego.findUniqueOrThrow({ where: { id: juegoId } });
+      const venta = await transaction.venta.create({ data: { juegoId, precio: juego.precio } });
+      return new Venta(venta.id, venta.juegoId, Number(venta.precio), venta.fechaCreacion);
     });
   }
 
-  private toGame(game: { id: string; titulo: string; genero: string; precio: { toString(): string }; stock: number; fechaCreacion: Date }): Game {
-    return Game.restore({ ...game, precio: Number(game.precio) });
+  private toJuego(juego: { id: string; titulo: string; genero: string; precio: { toString(): string }; stock: number; fechaCreacion: Date }): Juego {
+    return Juego.reconstruir({ ...juego, precio: Number(juego.precio) });
   }
 }
