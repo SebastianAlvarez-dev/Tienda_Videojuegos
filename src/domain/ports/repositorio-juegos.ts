@@ -5,6 +5,7 @@ export interface RepositorioJuegos {
   crear(juego: Juego): Promise<Juego>;
   listar(): Promise<Juego[]>;
   buscarPorId(id: string): Promise<Juego | null>;
+  actualizar(juego: Juego): Promise<Juego>;
   comprar(juegoId: string): Promise<Venta | null>;
 }
 

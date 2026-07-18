@@ -8,6 +8,8 @@ export type DatosJuego = {
   stock: number;
 };
 
+export type CambiosJuego = Partial<Omit<DatosJuego, 'id'>>;
+
 export class Juego {
   private constructor(
     readonly id: string,
@@ -19,10 +21,7 @@ export class Juego {
   ) {}
 
   static crear(datos: DatosJuego): Juego {
-    if (!datos.titulo.trim() || !datos.genero.trim() || !Number.isFinite(datos.precio) || datos.precio <= 0 || !Number.isInteger(datos.stock) || datos.stock < 0) {
-      throw new ErrorDominio('Los datos del videojuego no son válidos.', 'JUEGO_INVALIDO');
-    }
-
+    Juego.validar(datos);
     return new Juego(datos.id, datos.titulo.trim(), datos.genero.trim(), datos.precio, datos.stock, new Date());
   }
 
@@ -32,5 +31,19 @@ export class Juego {
 
   puedeComprarse(): boolean {
     return this.stock > 0;
+  }
+
+  actualizar(cambios: CambiosJuego): Juego {
+    if (!Object.keys(cambios).length) throw new ErrorDominio('Debe enviar al menos un campo para actualizar.', 'JUEGO_INVALIDO');
+
+    const datos = { id: this.id, titulo: cambios.titulo ?? this.titulo, genero: cambios.genero ?? this.genero, precio: cambios.precio ?? this.precio, stock: cambios.stock ?? this.stock };
+    Juego.validar(datos);
+    return new Juego(datos.id, datos.titulo.trim(), datos.genero.trim(), datos.precio, datos.stock, this.fechaCreacion);
+  }
+
+  private static validar(datos: DatosJuego): void {
+    if (!datos.titulo.trim() || !datos.genero.trim() || !Number.isFinite(datos.precio) || datos.precio <= 0 || !Number.isInteger(datos.stock) || datos.stock < 0) {
+      throw new ErrorDominio('Los datos del videojuego no son válidos.', 'JUEGO_INVALIDO');
+    }
   }
 }

@@ -18,6 +18,7 @@ describe('Games API', () => {
       crear: async (juego) => (juegos.set(juego.id, juego), juego),
       listar: async () => [...juegos.values()],
       buscarPorId: async (id) => juegos.get(id) ?? null,
+      actualizar: async (juego) => (juegos.set(juego.id, juego), juego),
       comprar: async (id) => {
         const juego = juegos.get(id);
         if (!juego || !juego.puedeComprarse()) return null;
@@ -32,6 +33,7 @@ describe('Games API', () => {
 
     const created = await request(app.getHttpServer()).post('/juegos').send({ titulo: 'Celeste', genero: 'Plataformas', precio: 12.5, stock: 1 }).expect(201);
     await request(app.getHttpServer()).get('/juegos').expect(200).expect(({ body }) => expect(body).toHaveLength(1));
+    await request(app.getHttpServer()).patch(`/juegos/${created.body.id}`).send({ precio: 10, stock: 2 }).expect(200).expect(({ body }) => expect(body.precio).toBe(10));
     await request(app.getHttpServer()).post(`/juegos/${created.body.id}/compras`).expect(201);
   });
 });

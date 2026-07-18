@@ -146,6 +146,7 @@ npx prisma migrate resolve --applied 20260718040000_create_gamestore_tables
 | --- | --- | --- | --- |
 | `POST` | `/juegos` | `titulo`, `genero`, `precio`, `stock` | Crea un videojuego (`201`) |
 | `GET` | `/juegos` | No requiere | Lista el catálogo (`200`) |
+| `PATCH` | `/juegos/:juegoId` | Uno o más campos del juego | Actualiza el juego (`200`) |
 | `POST` | `/juegos/:juegoId/compras` | No requiere | Registra la compra (`201`) |
 
 Ejemplo para crear un juego:
@@ -170,3 +171,8 @@ Errores esperados: `400` para datos inválidos, `404` si el juego no existe y `4
 5. Ejecutar **Comprar videojuego**; utiliza el identificador guardado en la variable `juegoId`.
 
 La variable `baseUrl` inicia con el valor `http://localhost:3000` y puede cambiarse desde las variables de la colección.
+
+### 2026-07-18 — Actualización de videojuegos
+
+- Se agregó el caso de uso para actualizar título, género, precio o stock de forma parcial.
+- La API expone `PATCH /juegos/:juegoId` y conserva las ventas registradas.

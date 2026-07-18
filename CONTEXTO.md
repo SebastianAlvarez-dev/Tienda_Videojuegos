@@ -77,6 +77,7 @@ Infrastructure (Prisma, Supabase y repositorios)
 | --- | --- | --- | --- |
 | `POST` | `/juegos` | Registrar videojuego | `201 Created` |
 | `GET` | `/juegos` | Consultar catálogo | `200 OK` |
+| `PATCH` | `/juegos/:juegoId` | Actualizar videojuego | `200 OK` |
 | `POST` | `/juegos/:juegoId/compras` | Registrar compra | `201 Created` |
 
 ## Criterios de aceptación

@@ -47,6 +47,7 @@ La API queda disponible en `http://localhost:3000`.
 | --- | --- | --- |
 | `POST` | `/juegos` | Crea un videojuego. |
 | `GET` | `/juegos` | Lista el catálogo. |
+| `PATCH` | `/juegos/:juegoId` | Actualiza los datos recibidos. |
 | `POST` | `/juegos/:juegoId/compras` | Registra una compra. |
 
 Ejemplo para crear un juego:

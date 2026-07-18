@@ -36,6 +36,21 @@ export class PrismaGameRepository implements RepositorioJuegos {
     return juego ? this.toJuego(juego) : null;
   }
 
+  async actualizar(juego: Juego): Promise<Juego> {
+    try {
+      const actualizado = await this.prisma.juego.update({
+        where: { id: juego.id },
+        data: { titulo: juego.titulo, genero: juego.genero, precio: juego.precio, stock: juego.stock },
+      });
+      return this.toJuego(actualizado);
+    } catch (error: unknown) {
+      if (typeof error === 'object' && error && 'code' in error && error.code === 'P2002') {
+        throw new ErrorDominio('Ya existe un videojuego con ese título.', 'JUEGO_YA_EXISTE');
+      }
+      throw error;
+    }
+  }
+
   async comprar(juegoId: string): Promise<Venta | null> {
     return this.prisma.$transaction(async (transaction) => {
       const updated = await transaction.juego.updateMany({

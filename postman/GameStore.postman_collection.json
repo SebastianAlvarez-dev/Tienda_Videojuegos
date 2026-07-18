@@ -34,6 +34,15 @@
       "request": { "method": "GET", "url": "{{baseUrl}}/juegos" }
     },
     {
+      "name": "Actualizar videojuego",
+      "request": {
+        "method": "PATCH",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": { "mode": "raw", "raw": "{\n  \"precio\": 10,\n  \"stock\": 8\n}" },
+        "url": "{{baseUrl}}/juegos/{{juegoId}}"
+      }
+    },
+    {
       "name": "Comprar videojuego",
       "request": { "method": "POST", "url": "{{baseUrl}}/juegos/{{juegoId}}/compras" }
     }
