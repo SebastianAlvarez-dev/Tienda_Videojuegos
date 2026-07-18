@@ -6,16 +6,16 @@ import { CreateGameUseCase, ListGamesUseCase, PurchaseGameUseCase } from '../app
 class CreateGameDto {
   @IsString()
   @MinLength(1)
-  title!: string;
+  titulo!: string;
 
   @IsString()
   @MinLength(1)
-  genre!: string;
+  genero!: string;
 
   @Type(() => Number)
   @IsNumber()
   @Min(0.01)
-  price!: number;
+  precio!: number;
 
   @Type(() => Number)
   @IsInt()
@@ -23,7 +23,7 @@ class CreateGameDto {
   stock!: number;
 }
 
-@Controller('games')
+@Controller('juegos')
 export class GamesController {
   constructor(
     private readonly createGame: CreateGameUseCase,
@@ -41,9 +41,9 @@ export class GamesController {
     return this.listGames.execute();
   }
 
-  @Post(':gameId/purchases')
+  @Post(':juegoId/compras')
   @HttpCode(201)
-  purchase(@Param('gameId') gameId: string) {
-    return this.purchaseGame.execute(gameId);
+  purchase(@Param('juegoId') juegoId: string) {
+    return this.purchaseGame.execute(juegoId);
   }
 }

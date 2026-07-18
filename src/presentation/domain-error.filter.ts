@@ -3,10 +3,10 @@ import { Response } from 'express';
 import { DomainError } from '../domain/game';
 
 const statusByCode = {
-  INVALID_GAME: HttpStatus.BAD_REQUEST,
-  GAME_NOT_FOUND: HttpStatus.NOT_FOUND,
-  INSUFFICIENT_STOCK: HttpStatus.CONFLICT,
-  GAME_ALREADY_EXISTS: HttpStatus.CONFLICT,
+  JUEGO_INVALIDO: HttpStatus.BAD_REQUEST,
+  JUEGO_NO_ENCONTRADO: HttpStatus.NOT_FOUND,
+  STOCK_INSUFICIENTE: HttpStatus.CONFLICT,
+  JUEGO_YA_EXISTE: HttpStatus.CONFLICT,
 };
 
 @Catch(DomainError)

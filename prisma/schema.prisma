@@ -8,22 +8,22 @@ datasource db {
   directUrl = env("DIRECT_URL")
 }
 
-model Game {
-  id        String   @id @default(uuid())
-  title     String   @unique
-  genre     String
-  price     Decimal  @db.Decimal(10, 2)
-  stock     Int
-  createdAt DateTime @default(now())
-  sales     Sale[]
+model Juego {
+  id            String   @id @default(uuid())
+  titulo        String   @unique
+  genero        String
+  precio        Decimal  @db.Decimal(10, 2)
+  stock         Int
+  fechaCreacion DateTime @default(now())
+  ventas        Venta[]
 }
 
-model Sale {
-  id        String   @id @default(uuid())
-  gameId    String
-  price     Decimal  @db.Decimal(10, 2)
-  createdAt DateTime @default(now())
-  game      Game     @relation(fields: [gameId], references: [id])
+model Venta {
+  id            String   @id @default(uuid())
+  juegoId       String
+  precio        Decimal  @db.Decimal(10, 2)
+  fechaCreacion DateTime @default(now())
+  juego         Juego    @relation(fields: [juegoId], references: [id])
 
-  @@index([gameId])
+  @@index([juegoId])
 }

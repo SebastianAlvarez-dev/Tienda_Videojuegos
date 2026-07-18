@@ -26,11 +26,11 @@ export class PurchaseGameUseCase {
 
   async execute(gameId: string): Promise<Sale> {
     const game = await this.games.findById(gameId);
-    if (!game) throw new DomainError('El videojuego no existe.', 'GAME_NOT_FOUND');
-    if (!game.canBePurchased()) throw new DomainError('El videojuego no tiene stock.', 'INSUFFICIENT_STOCK');
+    if (!game) throw new DomainError('El videojuego no existe.', 'JUEGO_NO_ENCONTRADO');
+    if (!game.canBePurchased()) throw new DomainError('El videojuego no tiene stock.', 'STOCK_INSUFICIENTE');
 
     const sale = await this.games.purchase(gameId);
-    if (!sale) throw new DomainError('El videojuego no tiene stock.', 'INSUFFICIENT_STOCK');
+    if (!sale) throw new DomainError('El videojuego no tiene stock.', 'STOCK_INSUFICIENTE');
     return sale;
   }
 }

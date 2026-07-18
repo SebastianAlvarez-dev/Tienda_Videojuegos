@@ -17,7 +17,7 @@ DIRECT_URL="conexion-directa-de-supabase"
 PORT=3000
 ```
 
-`DATABASE_URL` será usada por la aplicación y `DIRECT_URL` por Prisma para migraciones.
+`DATABASE_URL` será usada por la aplicación y `DIRECT_URL` por Prisma para migraciones. En desarrollo local se puede usar la misma cadena de **Session pooler** (puerto `5432`) en ambas variables.
 
 ## Estructura prevista
 
@@ -71,7 +71,7 @@ Se ejecutan desde la terminal integrada de Visual Studio Code. La extensión **V
 
 ## Flujo de una compra
 
-1. El cliente envía `POST /games/:gameId/purchases`.
+1. El cliente envía `POST /juegos/:juegoId/compras`.
 2. El controlador valida la solicitud y llama al caso de uso.
 3. El caso de uso verifica que el juego exista y tenga stock.
 4. El repositorio registra la venta y reduce el stock dentro de una transacción.
@@ -92,3 +92,74 @@ Se ejecutan desde la terminal integrada de Visual Studio Code. La extensión **V
 - Se implementaron los endpoints para registrar, consultar y comprar videojuegos.
 - Se preparó el esquema de Prisma para Supabase PostgreSQL.
 - Se mantendrán las pruebas y la colección Postman en commits posteriores.
+
+### 2026-07-18 — Base de datos Supabase
+
+- Se creó el proyecto `gamestore-db` en la región `us-east-1`.
+- Se crearon las tablas `Juego` y `Venta` con sus claves, relación, índice y restricciones de precio y stock.
+- RLS está activo y no hay políticas públicas, porque la base se usa únicamente desde el backend con Prisma.
+
+### 2026-07-18 — Prueba real de la API
+
+- Se registró la migración inicial en Prisma sin exponer la contraseña de la base.
+- Se verificaron los tres casos de uso reales contra Supabase: crear un juego, consultar el catálogo y registrar una compra.
+- La API se ejecuta localmente en el puerto `3000` con las rutas `/juegos` y `/juegos/:juegoId/compras`.
+
+## Guía práctica de prueba
+
+### 1. Configurar Supabase
+
+1. Crear un proyecto en Supabase.
+2. Copiar `.env.example` como `.env`.
+3. En Supabase, abrir **Connect** y copiar la conexión de pooler en `DATABASE_URL` y la conexión directa en `DIRECT_URL`.
+
+No se usa una clave pública de Supabase: Prisma se conecta directamente a PostgreSQL mediante estas cadenas.
+
+### 2. Preparar y ejecutar la API
+
+```powershell
+npm install
+Copy-Item .env.example .env
+# Completar DATABASE_URL y DIRECT_URL en .env
+npm run prisma:generate
+npm run start:dev
+```
+
+La API queda disponible en `http://localhost:3000`.
+
+La primera migración ya fue aplicada en Supabase. Para registrar ese estado en Prisma, ejecutar una única vez:
+
+```powershell
+npx prisma migrate resolve --applied 20260718040000_create_gamestore_tables
+```
+
+### 3. Endpoints REST
+
+| Método | Ruta | Cuerpo | Resultado |
+| --- | --- | --- | --- |
+| `POST` | `/juegos` | `titulo`, `genero`, `precio`, `stock` | Crea un videojuego (`201`) |
+| `GET` | `/juegos` | No requiere | Lista el catálogo (`200`) |
+| `POST` | `/juegos/:juegoId/compras` | No requiere | Registra la compra (`201`) |
+
+Ejemplo para crear un juego:
+
+```json
+{
+  "titulo": "Celeste",
+  "genero": "Plataformas",
+  "precio": 12.5,
+  "stock": 5
+}
+```
+
+Errores esperados: `400` para datos inválidos, `404` si el juego no existe y `409` si ya existe el título o no queda stock.
+
+### 4. Postman
+
+1. Abrir Postman y elegir **Import**.
+2. Seleccionar `postman/GameStore.postman_collection.json`.
+3. Ejecutar **Registrar videojuego**; la colección guarda automáticamente el identificador recibido.
+4. Ejecutar **Consultar catálogo**.
+5. Ejecutar **Comprar videojuego**; utiliza el identificador guardado en la variable `juegoId`.
+
+La variable `baseUrl` inicia con el valor `http://localhost:3000` y puede cambiarse desde las variables de la colección.

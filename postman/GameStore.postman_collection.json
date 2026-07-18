@@ -1,0 +1,41 @@
+{
+  "info": {
+    "name": "GameStore API",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "juegoId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Registrar videojuego",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Content-Type", "value": "application/json" }],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"titulo\": \"Celeste\",\n  \"genero\": \"Plataformas\",\n  \"precio\": 12.5,\n  \"stock\": 5\n}"
+        },
+        "url": "{{baseUrl}}/juegos"
+      },
+      "event": [{
+        "listen": "test",
+        "script": {
+          "exec": [
+            "pm.test('Creado', () => pm.response.to.have.status(201));",
+            "pm.collectionVariables.set('juegoId', pm.response.json().id);"
+          ]
+        }
+      }]
+    },
+    {
+      "name": "Consultar catálogo",
+      "request": { "method": "GET", "url": "{{baseUrl}}/juegos" }
+    },
+    {
+      "name": "Comprar videojuego",
+      "request": { "method": "POST", "url": "{{baseUrl}}/juegos/{{juegoId}}/compras" }
+    }
+  ]
+}

@@ -1,15 +1,15 @@
 export type CreateGameInput = {
   id: string;
-  title: string;
-  genre: string;
-  price: number;
+  titulo: string;
+  genero: string;
+  precio: number;
   stock: number;
 };
 
 export class DomainError extends Error {
   constructor(
     message: string,
-    readonly code: 'INVALID_GAME' | 'GAME_NOT_FOUND' | 'INSUFFICIENT_STOCK' | 'GAME_ALREADY_EXISTS',
+    readonly code: 'JUEGO_INVALIDO' | 'JUEGO_NO_ENCONTRADO' | 'STOCK_INSUFICIENTE' | 'JUEGO_YA_EXISTE',
   ) {
     super(message);
   }
@@ -18,23 +18,23 @@ export class DomainError extends Error {
 export class Game {
   private constructor(
     readonly id: string,
-    readonly title: string,
-    readonly genre: string,
-    readonly price: number,
+    readonly titulo: string,
+    readonly genero: string,
+    readonly precio: number,
     readonly stock: number,
-    readonly createdAt: Date,
+    readonly fechaCreacion: Date,
   ) {}
 
   static create(input: CreateGameInput): Game {
-    if (!input.title.trim() || !input.genre.trim() || !Number.isFinite(input.price) || input.price <= 0 || !Number.isInteger(input.stock) || input.stock < 0) {
-      throw new DomainError('Los datos del videojuego no son válidos.', 'INVALID_GAME');
+    if (!input.titulo.trim() || !input.genero.trim() || !Number.isFinite(input.precio) || input.precio <= 0 || !Number.isInteger(input.stock) || input.stock < 0) {
+      throw new DomainError('Los datos del videojuego no son válidos.', 'JUEGO_INVALIDO');
     }
 
-    return new Game(input.id, input.title.trim(), input.genre.trim(), input.price, input.stock, new Date());
+    return new Game(input.id, input.titulo.trim(), input.genero.trim(), input.precio, input.stock, new Date());
   }
 
-  static restore(data: CreateGameInput & { createdAt: Date }): Game {
-    return new Game(data.id, data.title, data.genre, data.price, data.stock, data.createdAt);
+  static restore(data: CreateGameInput & { fechaCreacion: Date }): Game {
+    return new Game(data.id, data.titulo, data.genero, data.precio, data.stock, data.fechaCreacion);
   }
 
   canBePurchased(): boolean {
@@ -45,9 +45,9 @@ export class Game {
 export class Sale {
   constructor(
     readonly id: string,
-    readonly gameId: string,
-    readonly price: number,
-    readonly createdAt: Date,
+    readonly juegoId: string,
+    readonly precio: number,
+    readonly fechaCreacion: Date,
   ) {}
 }
 
