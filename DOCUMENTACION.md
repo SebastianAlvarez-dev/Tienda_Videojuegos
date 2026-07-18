@@ -105,6 +105,13 @@ Se ejecutan desde la terminal integrada de Visual Studio Code. La extensión **V
 - Se verificaron los tres casos de uso reales contra Supabase: crear un juego, consultar el catálogo y registrar una compra.
 - La API se ejecuta localmente en el puerto `3000` con las rutas `/juegos` y `/juegos/:juegoId/compras`.
 
+### 2026-07-18 — API y pruebas en español
+
+- Se tradujeron las rutas, los cuerpos JSON, los errores y el modelo de datos a español.
+- Se añadieron pruebas unitarias y de integración con Vitest.
+- Se agregó una colección Postman para registrar, consultar y comprar videojuegos.
+- Se creó `README.md` con los pasos de instalación, uso y pruebas del proyecto.
+
 ## Guía práctica de prueba
 
 ### 1. Configurar Supabase
