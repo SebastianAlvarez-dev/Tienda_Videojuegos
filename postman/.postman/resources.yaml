@@ -1,0 +1,11 @@
+# Use this workspace to collaborate
+workspace:
+  id: 1ec848b9-0750-4039-8562-9951ba23a8f3
+
+localResources:
+  collections:
+    - ../GameStore.postman_collection.json
+
+cloudResources:
+  collections:
+    ../postman/collections/GameStore API: d241fa1d-8ba4-4f4b-add6-992347df6ebf

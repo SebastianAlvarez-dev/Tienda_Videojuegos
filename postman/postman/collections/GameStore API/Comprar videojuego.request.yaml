@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{baseUrl}}/juegos/{{juegoId}}/compras"
+method: POST
+order: 3000

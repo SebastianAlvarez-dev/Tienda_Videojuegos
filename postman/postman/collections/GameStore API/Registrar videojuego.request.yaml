@@ -1,0 +1,21 @@
+$kind: http-request
+url: "{{baseUrl}}/juegos"
+method: POST
+headers:
+  Content-Type: application/json
+body:
+  type: text
+  content: |-
+    {
+      "titulo": "Celeste",
+      "genero": "Plataformas",
+      "precio": 12.5,
+      "stock": 5
+    }
+scripts:
+  - type: afterResponse
+    code: |-
+      pm.test('Creado', () => pm.response.to.have.status(201));
+      pm.collectionVariables.set('juegoId', pm.response.json().id);
+    language: text/javascript
+order: 1000
