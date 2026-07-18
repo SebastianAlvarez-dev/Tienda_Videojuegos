@@ -40,18 +40,18 @@ postman/
 prisma/
 ```
 
-## Ejecución prevista
-
-Los comandos definitivos se agregarán al crear el proyecto NestJS:
+## Ejecución
 
 ```bash
 npm run start:dev
 npm run test
 npm run test:unit
 npm run test:integration
+npm run prisma:generate
+npm run prisma:migrate -- --name init
 ```
 
-También se podrán ejecutar desde la terminal integrada de Visual Studio Code o desde el panel **Testing**, configurado para Vitest.
+Se ejecutan desde la terminal integrada de Visual Studio Code. La extensión **Vitest** permite ver y ejecutar los archivos `test/**/*.spec.ts` desde el panel **Testing**.
 
 ## Convenciones HTTP
 
@@ -79,7 +79,16 @@ También se podrán ejecutar desde la terminal integrada de Visual Studio Code o
 
 ## Pendiente de implementación
 
-1. Crear el proyecto NestJS y configurar Vitest.
-2. Conectar Prisma a Supabase.
-3. Implementar los tres casos de uso y sus endpoints.
-4. Añadir pruebas y colección Postman.
+1. Crear el proyecto de Supabase y completar `.env` con sus cadenas de conexión.
+2. Ejecutar la primera migración de Prisma.
+3. Importar la colección Postman y ejecutar sus solicitudes.
+
+## Bitácora de avances
+
+### 2026-07-18 — API inicial
+
+- Se configuró el proyecto con NestJS y TypeScript.
+- Se separaron dominio, aplicación, infraestructura y presentación.
+- Se implementaron los endpoints para registrar, consultar y comprar videojuegos.
+- Se preparó el esquema de Prisma para Supabase PostgreSQL.
+- Se mantendrán las pruebas y la colección Postman en commits posteriores.
