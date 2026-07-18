@@ -1,7 +1,9 @@
 import { Body, Controller, Get, HttpCode, Param, Post } from '@nestjs/common';
 import { Type } from 'class-transformer';
 import { IsInt, IsNumber, IsString, Min, MinLength } from 'class-validator';
-import { CreateGameUseCase, ListGamesUseCase, PurchaseGameUseCase } from '../application/game.use-cases';
+import { ComprarJuegoCasoUso } from '../application/use-cases/comprar-juego.caso-uso';
+import { CrearJuegoCasoUso } from '../application/use-cases/crear-juego.caso-uso';
+import { ListarJuegosCasoUso } from '../application/use-cases/listar-juegos.caso-uso';
 
 class CreateGameDto {
   @IsString()
@@ -26,24 +28,24 @@ class CreateGameDto {
 @Controller('juegos')
 export class GamesController {
   constructor(
-    private readonly createGame: CreateGameUseCase,
-    private readonly listGames: ListGamesUseCase,
-    private readonly purchaseGame: PurchaseGameUseCase,
+    private readonly crearJuego: CrearJuegoCasoUso,
+    private readonly listarJuegos: ListarJuegosCasoUso,
+    private readonly comprarJuego: ComprarJuegoCasoUso,
   ) {}
 
   @Post()
   create(@Body() body: CreateGameDto) {
-    return this.createGame.execute(body);
+    return this.crearJuego.ejecutar(body);
   }
 
   @Get()
   findAll() {
-    return this.listGames.execute();
+    return this.listarJuegos.ejecutar();
   }
 
   @Post(':juegoId/compras')
   @HttpCode(201)
   purchase(@Param('juegoId') juegoId: string) {
-    return this.purchaseGame.execute(juegoId);
+    return this.comprarJuego.ejecutar(juegoId);
   }
 }

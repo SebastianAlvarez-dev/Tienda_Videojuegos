@@ -3,7 +3,9 @@ import { Test } from '@nestjs/testing';
 import request from 'supertest';
 import { afterEach, describe, expect, it } from 'vitest';
 import { AppModule } from '../../src/app.module';
-import { Game, GameRepository, Sale, GAME_REPOSITORY } from '../../src/domain/game';
+import { Juego } from '../../src/domain/entities/juego';
+import { Venta } from '../../src/domain/entities/venta';
+import { REPOSITORIO_JUEGOS, RepositorioJuegos } from '../../src/domain/ports/repositorio-juegos';
 
 describe('Games API', () => {
   let app: INestApplication;
@@ -11,19 +13,19 @@ describe('Games API', () => {
   afterEach(async () => app?.close());
 
   it('registra, lista y compra un videojuego', async () => {
-    const games = new Map<string, Game>();
-    const repository: GameRepository = {
-      create: async (game) => (games.set(game.id, game), game),
-      findAll: async () => [...games.values()],
-      findById: async (id) => games.get(id) ?? null,
-      purchase: async (id) => {
-        const game = games.get(id);
-        if (!game || !game.canBePurchased()) return null;
-        games.set(id, Game.restore({ ...game, stock: game.stock - 1 }));
-        return new Sale('venta-1', id, game.precio, new Date());
+    const juegos = new Map<string, Juego>();
+    const repository: RepositorioJuegos = {
+      crear: async (juego) => (juegos.set(juego.id, juego), juego),
+      listar: async () => [...juegos.values()],
+      buscarPorId: async (id) => juegos.get(id) ?? null,
+      comprar: async (id) => {
+        const juego = juegos.get(id);
+        if (!juego || !juego.puedeComprarse()) return null;
+        juegos.set(id, Juego.reconstruir({ ...juego, stock: juego.stock - 1 }));
+        return new Venta('venta-1', id, juego.precio, new Date());
       },
     };
-    const module = await Test.createTestingModule({ imports: [AppModule] }).overrideProvider(GAME_REPOSITORY).useValue(repository).compile();
+    const module = await Test.createTestingModule({ imports: [AppModule] }).overrideProvider(REPOSITORIO_JUEGOS).useValue(repository).compile();
     app = module.createNestApplication();
     app.useGlobalPipes(new ValidationPipe({ whitelist: true, transform: true }));
     await app.init();
