@@ -1,0 +1,12 @@
+bin/
+obj/
+dist/
+node_modules/
+.vs/
+.vscode/
+.env
+.agents/
+.aspire/
+TestResults/
+postman/.postman/
+postman/postman/
