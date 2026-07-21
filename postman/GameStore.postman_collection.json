@@ -1,6 +1,6 @@
 {
   "info": {
-    "name": "GameStore API",
+    "name": "GameStore API - .NET Aspire",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
@@ -9,7 +9,7 @@
   ],
   "item": [
     {
-      "name": "Registrar videojuego",
+      "name": "1. Registrar videojuego",
       "request": {
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -23,28 +23,40 @@
         "listen": "test",
         "script": {
           "exec": [
-            "pm.test('Creado', () => pm.response.to.have.status(201));",
+            "pm.test('Responde 201', () => pm.response.to.have.status(201));",
             "pm.collectionVariables.set('juegoId', pm.response.json().id);"
           ]
         }
       }]
     },
     {
-      "name": "Consultar catálogo",
-      "request": { "method": "GET", "url": "{{baseUrl}}/juegos" }
+      "name": "2. Consultar catálogo",
+      "request": { "method": "GET", "url": "{{baseUrl}}/juegos" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": ["pm.test('Responde 200', () => pm.response.to.have.status(200));"] }
+      }]
     },
     {
-      "name": "Actualizar videojuego",
+      "name": "3. Actualizar videojuego",
       "request": {
         "method": "PATCH",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
         "body": { "mode": "raw", "raw": "{\n  \"precio\": 10,\n  \"stock\": 8\n}" },
         "url": "{{baseUrl}}/juegos/{{juegoId}}"
-      }
+      },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": ["pm.test('Responde 200', () => pm.response.to.have.status(200));"] }
+      }]
     },
     {
-      "name": "Comprar videojuego",
-      "request": { "method": "POST", "url": "{{baseUrl}}/juegos/{{juegoId}}/compras" }
+      "name": "4. Comprar videojuego",
+      "request": { "method": "POST", "url": "{{baseUrl}}/juegos/{{juegoId}}/compras" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": ["pm.test('Responde 201', () => pm.response.to.have.status(201));"] }
+      }]
     }
   ]
 }

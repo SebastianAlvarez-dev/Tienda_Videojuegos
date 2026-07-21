@@ -1,0 +1,28 @@
+@baseUrl = http://localhost:3000
+@juegoId = reemplazar-con-id
+
+### Registrar videojuego
+POST {{baseUrl}}/juegos
+Content-Type: application/json
+
+{
+  "titulo": "Celeste",
+  "genero": "Plataformas",
+  "precio": 12.50,
+  "stock": 5
+}
+
+### Consultar catálogo
+GET {{baseUrl}}/juegos
+
+### Actualizar videojuego
+PATCH {{baseUrl}}/juegos/{{juegoId}}
+Content-Type: application/json
+
+{
+  "precio": 10,
+  "stock": 8
+}
+
+### Comprar videojuego
+POST {{baseUrl}}/juegos/{{juegoId}}/compras
