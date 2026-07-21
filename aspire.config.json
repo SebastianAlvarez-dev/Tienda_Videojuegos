@@ -1,0 +1,22 @@
+{
+  "appHost": {
+    "path": "src/GameStore.AppHost/GameStore.AppHost.csproj"
+  },
+  "profiles": {
+    "https": {
+      "applicationUrl": "https://localhost:17152;http://localhost:15054",
+      "environmentVariables": {
+        "ASPIRE_DASHBOARD_OTLP_ENDPOINT_URL": "https://localhost:21098",
+        "ASPIRE_RESOURCE_SERVICE_ENDPOINT_URL": "https://localhost:22096"
+      }
+    },
+    "http": {
+      "applicationUrl": "http://localhost:15054",
+      "environmentVariables": {
+        "ASPIRE_DASHBOARD_OTLP_ENDPOINT_URL": "http://localhost:19268",
+        "ASPIRE_RESOURCE_SERVICE_ENDPOINT_URL": "http://localhost:20237",
+        "ASPIRE_ALLOW_UNSECURED_TRANSPORT": "true"
+      }
+    }
+  }
+}
