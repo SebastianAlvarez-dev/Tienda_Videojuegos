@@ -1,89 +1,53 @@
 # Contexto del sistema
 
-## Proyecto
+## Propósito
 
-**GameStore API** es una API REST para una tienda digital de videojuegos. Permite administrar el catálogo y registrar compras de juegos con control de stock.
+GameStore administra el catálogo y las ventas de una tienda digital de videojuegos. No incluye frontend, pagos reales, usuarios ni autenticación: su alcance está enfocado en demostrar reglas de negocio, arquitectura empresarial y pruebas automatizadas.
 
-## Objetivo académico
+## Lenguaje ubicuo
 
-Demostrar una aplicación de servidor con:
+| Término | Significado |
+| --- | --- |
+| Juego | Videojuego disponible en el catálogo. |
+| Catálogo | Conjunto de juegos registrados. |
+| Stock | Unidades disponibles para comprar. |
+| Venta | Registro inmutable de una compra realizada. |
+| Precio | Valor monetario positivo con dos decimales. |
 
-- Clean Architecture y DDD ligero.
-- Inyección de dependencias (DI) mediante NestJS.
-- API REST con métodos HTTP y códigos de respuesta correctos.
-- Persistencia en Supabase PostgreSQL mediante Prisma ORM.
-- Pruebas unitarias e integración ejecutables desde Visual Studio Code.
-- Colección Postman para probar los endpoints.
+## Agregado principal
 
-## Alcance inicial
+`Juego` es la raíz del agregado. Controla su título, género, precio, stock y colección de ventas. Nadie puede modificar directamente sus propiedades porque tienen setters privados.
 
-No se implementarán autenticación, pagos reales ni frontend. Una compra es un registro interno; su objetivo es demostrar reglas de negocio, transacciones y persistencia.
-
-## Casos de uso
-
-1. **Registrar videojuego:** crear un juego con título, precio, stock y género.
-2. **Consultar catálogo:** listar los videojuegos registrados.
-3. **Registrar compra:** descontar una unidad del stock y guardar la venta.
+`Venta` se crea únicamente mediante `Juego.Comprar()`. De esta forma, toda compra verifica el stock y descuenta una unidad antes de registrar la venta.
 
 ## Reglas de negocio
 
-- El título de un juego es obligatorio.
-- El precio debe ser mayor que cero.
-- El stock inicial no puede ser negativo.
-- No se puede comprar un juego inexistente ni sin stock.
-- Una compra debe actualizar el stock y crear la venta en una única transacción.
+1. El título es obligatorio, único y admite máximo 150 caracteres.
+2. El género es obligatorio y admite máximo 80 caracteres.
+3. El precio debe ser mayor que cero y se guarda con dos decimales.
+4. El stock nunca puede ser negativo.
+5. Una actualización debe contener al menos un campo.
+6. No puede comprarse un juego inexistente o sin stock.
+7. La venta conserva el precio vigente al momento de la compra.
 
-## Arquitectura
+## Casos de uso
 
-```text
-HTTP / NestJS controllers
-          |
-          v
-Application (casos de uso)
-          |
-          v
-Domain (entidades, reglas y puertos)
-          ^
-          |
-Infrastructure (Prisma, Supabase y repositorios)
-```
+1. Registrar un videojuego.
+2. Consultar el catálogo.
+3. Actualizar parcialmente un videojuego.
+4. Registrar una compra y descontar stock.
 
-- **Domain:** no depende de NestJS, Prisma ni Supabase.
-- **Application:** orquesta los casos de uso y depende de puertos del dominio.
-- **Infrastructure:** implementa los puertos usando Prisma y Supabase PostgreSQL.
-- **Presentation:** controladores NestJS, DTOs y manejo HTTP.
+## Eventos de dominio
 
-## Stack aprobado
+- `JuegoCreado`: se registra cuando nace un juego.
+- `JuegoActualizado`: se registra al cambiar datos del catálogo.
+- `CompraRealizada`: se registra después de una compra válida.
 
-| Área | Tecnología |
-| --- | --- |
-| Runtime y lenguaje | Node.js + TypeScript |
-| Framework API | NestJS |
-| Base de datos | Supabase PostgreSQL |
-| ORM | Prisma |
-| Validación HTTP | class-validator y class-transformer |
-| Pruebas | Vitest + Supertest |
-| Cliente de API | Postman |
-| Documentación | Markdown |
+Las entidades acumulan eventos y `GameStoreDbContext` los despacha después de persistir correctamente los cambios. `RegistrarCompraRealizada` demuestra un consumidor desacoplado mediante logging estructurado.
 
-## Recursos principales
+## Decisiones de alcance
 
-- `Juego`: videojuego disponible para la venta.
-- `Venta`: registro de una compra realizada.
-
-## Endpoints previstos
-
-| Método | Ruta | Caso de uso | Respuesta exitosa |
-| --- | --- | --- | --- |
-| `POST` | `/juegos` | Registrar videojuego | `201 Created` |
-| `GET` | `/juegos` | Consultar catálogo | `200 OK` |
-| `PATCH` | `/juegos/:juegoId` | Actualizar videojuego | `200 OK` |
-| `POST` | `/juegos/:juegoId/compras` | Registrar compra | `201 Created` |
-
-## Criterios de aceptación
-
-- Los tres casos de uso funcionan a través de la API.
-- Las reglas de negocio tienen pruebas unitarias.
-- Los endpoints tienen pruebas de integración.
-- La colección de Postman permite ejecutar las tres operaciones.
-- Los comandos de prueba funcionan en la terminal integrada de Visual Studio Code.
+- PostgreSQL se ejecuta como contenedor administrado por Aspire para que el entorno sea reproducible durante la exposición.
+- EF Core aplica las migraciones automáticamente al iniciar la API.
+- CQRS se implementa con interfaces y handlers propios; no se agregó MediatR porque la rúbrica exige el patrón, no esa dependencia.
+- Postman y `GameStore.Api.http` cubren todos los flujos evaluables.

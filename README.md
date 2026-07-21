@@ -1,89 +1,58 @@
 # GameStore API
 
-API REST para administrar una tienda de videojuegos. Implementa Clean Architecture, NestJS, Prisma y Supabase PostgreSQL.
+Backend de una tienda de videojuegos desarrollado para demostrar DDD, Arquitectura Limpia, CQRS, Entity Framework Core, PostgreSQL y pruebas de extremo a extremo con .NET Aspire.
 
-## Funcionalidades
+## Requisitos
 
-- Registrar un videojuego.
-- Consultar el catálogo.
-- Registrar una compra y descontar el stock.
+- .NET SDK 10.
+- Aspire CLI 13.4 o superior.
+- Docker Desktop encendido.
+- Postman o Visual Studio Code con soporte para archivos `.http`.
 
-## Tecnologías
+## Inicio rápido
 
-- Node.js y TypeScript.
-- NestJS.
-- Prisma ORM y Supabase PostgreSQL.
-- Vitest y Supertest.
-- Postman.
+```powershell
+dotnet tool restore
+aspire start
+```
 
-## Configuración
+Aspire levanta PostgreSQL, aplica automáticamente las migraciones de EF Core, inicia la API y abre el dashboard. La API queda disponible en `http://localhost:3000`.
 
-1. Instalar dependencias:
-
-   ```powershell
-   npm install
-   ```
-
-2. Copiar `.env.example` a `.env` y completar las dos URLs de PostgreSQL de Supabase. No subir `.env` al repositorio.
-
-3. Generar Prisma y aplicar las migraciones en una base nueva:
-
-   ```powershell
-   npm run prisma:generate
-   npx prisma migrate deploy
-   ```
-
-4. Iniciar la API:
-
-   ```powershell
-   npm run start:dev
-   ```
-
-La API queda disponible en `http://localhost:3000`.
+No se necesita `.env` ni una cuenta de Supabase para ejecutar el examen: AppHost administra la conexión, el contenedor y sus credenciales.
 
 ## Endpoints
 
-| Método | Ruta | Descripción |
-| --- | --- | --- |
-| `POST` | `/juegos` | Crea un videojuego. |
-| `GET` | `/juegos` | Lista el catálogo. |
-| `PATCH` | `/juegos/:juegoId` | Actualiza los datos recibidos. |
-| `POST` | `/juegos/:juegoId/compras` | Registra una compra. |
-
-Ejemplo para crear un juego:
-
-```json
-{
-  "titulo": "Celeste",
-  "genero": "Plataformas",
-  "precio": 12.5,
-  "stock": 5
-}
-```
+| Método | Ruta | Operación CQRS | Resultado |
+| --- | --- | --- | --- |
+| `POST` | `/juegos` | `CrearJuegoCommand` | Registra un videojuego. |
+| `GET` | `/juegos` | `ListarJuegosQuery` | Consulta el catálogo. |
+| `PATCH` | `/juegos/{juegoId}` | `ActualizarJuegoCommand` | Actualiza campos recibidos. |
+| `POST` | `/juegos/{juegoId}/compras` | `RegistrarCompraCommand` | Registra una venta y descuenta stock. |
 
 ## Pruebas
 
 ```powershell
-npm test
-npm run test:unit
-npm run test:integration
+dotnet test tests/unit/GameStore.UnitTests/GameStore.UnitTests.csproj
+dotnet test tests/integration/GameStore.FunctionalTests/GameStore.FunctionalTests.csproj
+dotnet test GameStore.slnx
 ```
 
-## Postman
+Las pruebas funcionales usan `Aspire.Hosting.Testing`: crean el AppHost programáticamente y prueban la API real sobre PostgreSQL.
 
-Importar `postman/GameStore.postman_collection.json` o crear las tres solicitudes con las rutas indicadas. Ejecutarlas en el orden: registrar, consultar y comprar.
-
-## Arquitectura
+## Estructura
 
 ```text
-src/domain           Entidades y puertos
-  entities/          Juego y Venta
-  errors/            Errores de negocio
-  ports/             Contratos de repositorio
-src/application
-  use-cases/         Un archivo por caso de uso
-src/infrastructure   Prisma y repositorios
-src/presentation     Controladores HTTP y validación
+src/
+  GameStore.Domain/           Entidades, Value Objects y eventos de dominio
+  GameStore.Application/      Commands, Queries, Handlers y contratos
+  GameStore.Infrastructure/   EF Core, repositorio, eventos y migraciones
+  GameStore.Api/              Controladores y manejo HTTP
+  GameStore.AppHost/          Orquestación de API y PostgreSQL
+  GameStore.ServiceDefaults/  Observabilidad, health checks y resiliencia
+tests/
+  unit/GameStore.UnitTests/
+  integration/GameStore.FunctionalTests/
+postman/
 ```
 
-La documentación ampliada y la bitácora están en `CONTEXTO.md` y `DOCUMENTACION.md`.
+Consulta [MANUAL_DE_USO.md](MANUAL_DE_USO.md), [CONTEXTO.md](CONTEXTO.md) y [DOCUMENTACION.md](DOCUMENTACION.md) para la explicación completa.
