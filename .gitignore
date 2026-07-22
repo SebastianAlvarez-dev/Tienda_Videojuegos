@@ -1,7 +1,5 @@
 bin/
 obj/
-dist/
-node_modules/
 .vs/
 .vscode/
 .env

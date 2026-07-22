@@ -1,6 +1,9 @@
 @baseUrl = http://localhost:3000
 @juegoId = reemplazar-con-id
 
+### Verificar API
+GET {{baseUrl}}/
+
 ### Registrar videojuego
 POST {{baseUrl}}/juegos
 Content-Type: application/json

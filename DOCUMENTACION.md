@@ -96,6 +96,9 @@ La cadena anterior solo permite construir el contexto en tiempo de diseño; AppH
 
 `GameStore.UnitTests` prueba sin base de datos:
 
+- Validaciones de título, precio y stock.
+- Rechazo de títulos duplicados.
+- Aislamiento de dependencias del dominio.
 - Emisión de eventos.
 - Rechazo de compras sin stock.
 - Actualización parcial.
@@ -103,7 +106,7 @@ La cadena anterior solo permite construir el contexto en tiempo de diseño; AppH
 
 ### Funcionales/E2E
 
-`GameStore.FunctionalTests` usa `Aspire.Hosting.Testing`. La prueba construye `GameStore.AppHost`, espera que `api` esté saludable y ejecuta el flujo `POST → PATCH → compra → GET` mediante HTTP real y PostgreSQL real.
+`GameStore.FunctionalTests` usa `Aspire.Hosting.Testing`. La prueba construye `GameStore.AppHost`, espera que `api` esté saludable, verifica la ruta raíz y ejecuta el flujo `POST → PATCH → compra → GET` mediante HTTP real y PostgreSQL real.
 
 ## Respuestas HTTP
 

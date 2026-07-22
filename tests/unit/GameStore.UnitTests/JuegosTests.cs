@@ -12,6 +12,57 @@ namespace GameStore.UnitTests;
 public sealed class JuegosTests
 {
     [Fact]
+    public void Titulo_vacio_es_rechazado()
+    {
+        var error = Assert.Throws<ExcepcionDominio>(() => TituloJuego.Crear(" "));
+
+        Assert.Equal("JUEGO_INVALIDO", error.Codigo);
+    }
+
+    [Fact]
+    public void Precio_cero_es_rechazado()
+    {
+        var error = Assert.Throws<ExcepcionDominio>(() => Dinero.Crear(0));
+
+        Assert.Equal("JUEGO_INVALIDO", error.Codigo);
+    }
+
+    [Fact]
+    public void Stock_negativo_es_rechazado()
+    {
+        var error = Assert.Throws<ExcepcionDominio>(() => Juego.Crear(
+            TituloJuego.Crear("Celeste"),
+            "Plataformas",
+            Dinero.Crear(12.50m),
+            -1));
+
+        Assert.Equal("JUEGO_INVALIDO", error.Codigo);
+    }
+
+    [Fact]
+    public async Task Titulo_duplicado_es_rechazado()
+    {
+        var repositorio = new RepositorioJuegosFalso();
+        var handler = new CrearJuegoHandler(repositorio);
+        var comando = new CrearJuegoCommand("Celeste", "Plataformas", 12.50m, 5);
+        await handler.ManejarAsync(comando, CancellationToken.None);
+
+        var error = await Assert.ThrowsAsync<ExcepcionDominio>(() =>
+            handler.ManejarAsync(comando, CancellationToken.None));
+
+        Assert.Equal("JUEGO_YA_EXISTE", error.Codigo);
+    }
+
+    [Fact]
+    public void Dominio_no_depende_de_otras_capas()
+    {
+        var dependencias = typeof(Juego).Assembly.GetReferencedAssemblies();
+
+        Assert.DoesNotContain(dependencias, dependencia =>
+            dependencia.Name?.StartsWith("GameStore.", StringComparison.Ordinal) is true);
+    }
+
+    [Fact]
     public void Crear_juego_registra_evento_de_dominio()
     {
         var juego = Juego.Crear(

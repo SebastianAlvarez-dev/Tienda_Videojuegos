@@ -8,7 +8,6 @@ builder.AddProject<Projects.GameStore_Api>("api")
     .WithReference(database)
     .WaitFor(database)
     .WithEndpoint("http", endpoint => endpoint.Port = 3000)
-    .WithEndpoint("https", endpoint => endpoint.Port = 7000)
     .WithExternalHttpEndpoints()
     .WithHttpHealthCheck("/health");
 

@@ -24,6 +24,7 @@ No se necesita `.env` ni una cuenta de Supabase para ejecutar el examen: AppHost
 
 | Método | Ruta | Operación CQRS | Resultado |
 | --- | --- | --- | --- |
+| `GET` | `/` | Estado del servicio | Confirma que la API está funcionando. |
 | `POST` | `/juegos` | `CrearJuegoCommand` | Registra un videojuego. |
 | `GET` | `/juegos` | `ListarJuegosQuery` | Consulta el catálogo. |
 | `PATCH` | `/juegos/{juegoId}` | `ActualizarJuegoCommand` | Actualiza campos recibidos. |

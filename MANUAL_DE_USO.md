@@ -73,6 +73,12 @@ Espera a que `api` tenga estado **Healthy**. La dirección para Postman es:
 http://localhost:3000
 ```
 
+Al abrir esa dirección en el navegador debes recibir:
+
+```json
+{"mensaje":"GameStore API funcionando correctamente"}
+```
+
 Para detener todo, vuelve a la terminal y presiona `Ctrl + C`. También puedes ejecutar:
 
 ```powershell

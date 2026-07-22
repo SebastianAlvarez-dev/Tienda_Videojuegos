@@ -30,6 +30,10 @@ builder.Services.AddScoped<RegistrarCompraHandler>();
 var app = builder.Build();
 
 app.UseExceptionHandler();
+app.MapGet("/", () => Results.Ok(new
+{
+    mensaje = "GameStore API funcionando correctamente"
+}));
 app.MapControllers();
 app.MapDefaultEndpoints();
 

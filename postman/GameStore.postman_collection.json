@@ -9,7 +9,15 @@
   ],
   "item": [
     {
-      "name": "1. Registrar videojuego",
+      "name": "1. Verificar API",
+      "request": { "method": "GET", "url": "{{baseUrl}}/" },
+      "event": [{
+        "listen": "test",
+        "script": { "exec": ["pm.test('Responde 200', () => pm.response.to.have.status(200));"] }
+      }]
+    },
+    {
+      "name": "2. Registrar videojuego",
       "request": {
         "method": "POST",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -30,7 +38,7 @@
       }]
     },
     {
-      "name": "2. Consultar catálogo",
+      "name": "3. Consultar catálogo",
       "request": { "method": "GET", "url": "{{baseUrl}}/juegos" },
       "event": [{
         "listen": "test",
@@ -38,7 +46,7 @@
       }]
     },
     {
-      "name": "3. Actualizar videojuego",
+      "name": "4. Actualizar videojuego",
       "request": {
         "method": "PATCH",
         "header": [{ "key": "Content-Type", "value": "application/json" }],
@@ -51,7 +59,7 @@
       }]
     },
     {
-      "name": "4. Comprar videojuego",
+      "name": "5. Comprar videojuego",
       "request": { "method": "POST", "url": "{{baseUrl}}/juegos/{{juegoId}}/compras" },
       "event": [{
         "listen": "test",

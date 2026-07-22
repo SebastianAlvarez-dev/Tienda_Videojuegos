@@ -25,6 +25,9 @@ public sealed class GameStoreApiTests
         using var client = app.CreateHttpClient("api", "http");
         var titulo = $"Juego E2E {Guid.NewGuid():N}";
 
+        var estado = await client.GetFromJsonAsync<EstadoApi>("/", cancellationToken);
+        Assert.Equal("GameStore API funcionando correctamente", estado?.Mensaje);
+
         var crearRespuesta = await client.PostAsJsonAsync("/juegos", new
         {
             titulo,
@@ -52,5 +55,6 @@ public sealed class GameStoreApiTests
         Assert.Equal(10, juego.Precio);
     }
 
+    private sealed record EstadoApi(string Mensaje);
     private sealed record JuegoApi(Guid Id, string Titulo, string Genero, decimal Precio, int Stock);
 }
